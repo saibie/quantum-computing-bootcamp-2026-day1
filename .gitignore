@@ -9,6 +9,16 @@ __pycache__/
 # Jupyter checkpoints
 .ipynb_checkpoints/
 
+# LaTeX auxiliary files
+*.aux
+*.log
+*.nav
+*.out
+*.snm
+*.toc
+*.vrb
+*.synctex.gz
+
 # OS and compressed files
 *.zip
 .DS_Store

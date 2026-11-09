@@ -1,0 +1,75 @@
+\documentclass[a4paper,10pt]{article}
+\usepackage{kotex}
+\usepackage{amsmath,amssymb}
+\usepackage{geometry}
+\geometry{top=15mm, bottom=15mm, left=16mm, right=16mm}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\usepackage{hyperref}
+
+\definecolor{qcDarkBlue}{HTML}{1A365D}
+\definecolor{qcAccentBlue}{HTML}{2B6CB0}
+\definecolor{qcLightBlue}{HTML}{EBF8FF}
+
+\newcommand{\ket}[1]{|#1\rangle}
+\newcommand{\bra}[1]{\langle#1|}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=qcDarkBlue,
+    urlcolor=qcAccentBlue
+}
+
+\begin{document}
+
+\begin{center}
+    {\textbf{\Large [양자컴퓨팅 이론\&실습 4주 부트캠프] 1일차 세부 시간배분 계획서}}\\[0.25em]
+    \textbf{강사: 서상협 ((주)큐렌스)} \quad / \quad 2026. 11. 11 (수) \quad / \quad \textbf{75분 집중강의 + 20분 휴식 + 75분 실습}
+\end{center}
+\vspace{-0.2cm}
+
+\begin{tcolorbox}[colback=qcLightBlue, colframe=qcDarkBlue, title=\textbf{Day 1 운영 구조: [1부 75분 강의/손계산] + [20분 휴식] + [2부 75분 실습] + [10분 버퍼]}]
+\small
+\begin{itemize}
+    \item \textbf{1부 (75분)}: 비트 vs 큐비트 $\to$ 계산 기저/복소진폭 $\to$ \textbf{[손계산 1] 정규화 \& 확률} $\to$ 유니터리 6대 게이트 $\to$ \textbf{[손계산 2] $\ket{\pm}$ 위상 간섭}
+    \item \textbf{중간 휴식 (20분)}: 인지 피로 해소, 1부 개별 질의응답, \textbf{2부 실습 환경(uv 및 Jupyter 커널) 점검}
+    \item \textbf{2부 (75분)}: 블로흐 구 직관 $\to$ \textbf{[Lab 1--5] NumPy 상태벡터/게이트/위상간섭/1024 Shots 실습} $\to$ \textbf{[2부 챌린지] 1-큐비트 회로 추적} $\to$ 1일차 총정리
+    \item \textbf{종료 버퍼 (10분)}: 1일차 wrap-up 및 추가 질의응답 (조기 종료 시 자유 휴식)
+\end{itemize}
+\end{tcolorbox}
+
+\vspace{0.2cm}
+\section*{Day 1: 단일 큐비트와 상태벡터 (슬라이드 총 32장)}
+
+\noindent
+\small
+\begin{tabularx}{\textwidth}{cclcX}
+\toprule
+\textbf{구분} & \textbf{페이지 구간} & \textbf{핵심 주제} & \textbf{시간} & \textbf{교수자 진행 가이드 및 학습자 활동} \\
+\midrule
+\textbf{1부} & p.1 $\sim$ p.4 & 강의 도입, 비트와 큐비트의 물리적 차이 & 10분 & 스위치 vs 2-준위계, 학습 로드맵 제시 \\
+& p.5 $\sim$ p.9 & 계산 기저, 복소 진폭, Born 규칙, 샷 샘플링 & 16분 & Dirac 표기, 왜 복소수인가, 사영 측정 원리 \\
+& \textbf{p.10 $\sim$ p.11} & \textbf{[손계산 1] 임의 벡터 정규화 및 확률 풀이} & \textbf{10분} & \textbf{학습자 직접 손계산 (정규화 계수, 사영 붕괴 확률 계산)} \\
+& p.12 $\sim$ p.19 & 비트/큐비트 비교, 유니터리 조건, 6대 게이트 & 20분 & 유니터리성($U^* U = I$), $X, Y, Z, H$ ($H^2=I$), $S, T$ 게이트 \\
+& p.20 $\sim$ \textbf{p.21} & \textbf{위상 간섭 원리 및 [손계산 2] $\ket{\pm}$ 간섭} & \textbf{17분} & \textbf{상대 위상 개념 및 Hadamard 보강/상쇄 간섭 증명} \\
+& p.24 & 1부 마무리 점검 및 휴식 안내 & 2분 & 1부 달성도 확인 및 20분 휴식 선언 \\
+\midrule
+\multicolumn{3}{l}{\textbf{1부 소계 (이론 및 손계산 집중)}} & \textbf{75분} & \\
+\midrule
+\textbf{휴식} & -- & \textbf{중간 집중 휴식 및 실습 환경 점검} & \textbf{20분} & \textbf{휴식, 질문 응답, uv 및 Jupyter 커널 확인} \\
+\midrule
+\textbf{2부} & p.22 $\sim$ p.23 & [참고] 블로흐 구(Bloch Sphere) 기하학적 직관 & 8분 & 3차원 구면 위 6대 기저 위치 직관 파악 \\
+& p.25 $\sim$ p.27 & 2부 실습 개요 및 [Lab 1--2] 기저/게이트 검증 & 20분 & NumPy 배열 기저 정의, 유니터리성 전수 수치 검증 \\
+& p.28 & [Lab 3] 상대 위상에 따른 양자 간섭 검증 & 14분 & $\ket{+}, \ket{-}$에 $H$ 작용 수치 대조 \\
+& p.29 $\sim$ p.30 & [Lab 4--5] 1024 Shots 난수 샘플링 및 대수의 법칙 & 20분 & $1/\sqrt{M}$ 오차 수렴 그래프 및 Born 규칙 검증 \\
+& p.31 $\sim$ p.32 & [2부 챌린지] 1-큐비트 회로 추적 및 1일차 총정리 & 13분 & $HZHX\ket{0}$ 계산 및 1일차 wrap-up \\
+\midrule
+\multicolumn{3}{l}{\textbf{2부 소계 (NumPy 인터랙티브 실습)}} & \textbf{75분} & \\
+\midrule
+\multicolumn{3}{l}{\textbf{Day 1 전체 운영}} & \textbf{170분} & \textbf{+ 잔여 버퍼 10분 = 총 180분} \\
+\bottomrule
+\end{tabularx}
+
+\end{document}

@@ -1,0 +1,100 @@
+% ==============================================================================
+% Quantum Computing 12-Hour Course: Common LaTeX Beamer Preamble
+% ==============================================================================
+\usepackage{amsmath, amssymb, amsfonts, mathtools}
+\usepackage{booktabs}
+\usepackage{kotex}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, calc}
+
+% Syntax highlighting & listings
+\usepackage{listings}
+\usepackage{xcolor}
+
+\definecolor{qcDarkBlue}{RGB}{20, 35, 60}
+\definecolor{qcAccentBlue}{RGB}{0, 114, 206}
+\definecolor{qcTeal}{RGB}{0, 168, 150}
+\definecolor{qcLightGray}{RGB}{246, 248, 251}
+\definecolor{qcCodeBg}{RGB}{242, 244, 247}
+\definecolor{qcKeyword}{RGB}{140, 30, 120}
+\definecolor{qcString}{RGB}{30, 120, 50}
+\definecolor{qcComment}{RGB}{110, 110, 120}
+
+\lstset{
+    backgroundcolor=\color{qcCodeBg},
+    basicstyle=\ttfamily\scriptsize,
+    keywordstyle=\color{qcKeyword}\bfseries,
+    stringstyle=\color{qcString},
+    commentstyle=\color{qcComment}\itshape,
+    breaklines=true,
+    showstringspaces=false,
+    tabsize=4,
+    frame=single,
+    rulecolor=\color{qcAccentBlue!30},
+    numbers=left,
+    numberstyle=\tiny\color{qcComment},
+    numbersep=6pt,
+    xleftmargin=10pt,
+    xrightmargin=5pt
+}
+
+% Beamer Theme Settings
+\usefonttheme[onlymath]{serif}
+\setbeamertemplate{navigation symbols}{}
+\setbeamercolor{palette primary}{bg=qcDarkBlue, fg=white}
+\setbeamercolor{palette secondary}{bg=qcAccentBlue, fg=white}
+\setbeamercolor{palette tertiary}{bg=qcTeal, fg=white}
+\setbeamercolor{structure}{fg=qcAccentBlue}
+\setbeamercolor{titlelike}{parent=palette primary}
+\setbeamercolor{frametitle}{bg=qcDarkBlue, fg=white}
+
+% Blocks (Tight padding to prevent vertical overflow)
+\usepackage{tcolorbox}
+\tcbuselibrary{skins, breakable}
+
+\newtcolorbox{qcblock}[1]{
+    colback=qcLightGray,
+    colframe=qcAccentBlue,
+    fonttitle=\bfseries\footnotesize\color{white},
+    coltitle=white,
+    title={#1},
+    arc=1.5mm,
+    boxrule=0.8pt,
+    left=5pt, right=5pt, top=3pt, bottom=3pt,
+    boxsep=1pt,
+    before=\vspace{2pt},
+    after=\vspace{2pt}
+}
+
+\newtcolorbox{qcalert}[1]{
+    colback=red!5,
+    colframe=red!75!black,
+    fonttitle=\bfseries\footnotesize\color{white},
+    title={#1},
+    arc=1.5mm,
+    boxrule=0.8pt,
+    left=5pt, right=5pt, top=3pt, bottom=3pt,
+    boxsep=1pt,
+    before=\vspace{2pt},
+    after=\vspace{2pt}
+}
+
+\newtcolorbox{qctip}[1]{
+    colback=green!5,
+    colframe=qcTeal,
+    fonttitle=\bfseries\footnotesize\color{white},
+    title={#1},
+    arc=1.5mm,
+    boxrule=0.8pt,
+    left=5pt, right=5pt, top=3pt, bottom=3pt,
+    boxsep=1pt,
+    before=\vspace{2pt},
+    after=\vspace{2pt}
+}
+
+% Quantum Dirac Notation Macros
+\newcommand{\ket}[1]{|#1\rangle}
+\newcommand{\bra}[1]{\langle#1|}
+\newcommand{\braket}[2]{\langle#1|#2\rangle}
+\newcommand{\ketbra}[2]{|#1\rangle\langle#2|}
+\newcommand{\normsq}[1]{|#1|^2}

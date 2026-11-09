@@ -47,6 +47,23 @@
 \setbeamercolor{structure}{fg=qcAccentBlue}
 \setbeamercolor{titlelike}{parent=palette primary}
 \setbeamercolor{frametitle}{bg=qcDarkBlue, fg=white}
+\setbeamercolor{framesubtitle}{bg=qcDarkBlue, fg=white!85}
+\setbeamerfont{frametitle}{size=\normalsize, series=\bfseries}
+\setbeamerfont{framesubtitle}{size=\scriptsize, series=\normalfont}
+
+\makeatletter
+\setbeamertemplate{frametitle}{%
+    \nointerlineskip%
+    \begin{beamercolorbox}[wd=\paperwidth,sep=4pt,leftskip=8pt]{frametitle}%
+        {\usebeamerfont{frametitle}\insertframetitle}%
+        \ifx\insertframesubtitle\@empty%
+        \else%
+            \par\vspace{1pt}%
+            {\usebeamerfont{framesubtitle}\usebeamercolor[fg]{framesubtitle}\insertframesubtitle}%
+        \fi%
+    \end{beamercolorbox}%
+}
+\makeatother
 
 % Blocks (Tight padding to prevent vertical overflow)
 \usepackage{tcolorbox}

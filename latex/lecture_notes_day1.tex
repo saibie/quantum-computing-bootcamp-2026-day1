@@ -1,0 +1,237 @@
+\documentclass[11pt, a4paper]{article}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{kotex}
+\usepackage{amsmath, amssymb, mathtools}
+\usepackage{amsthm}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, calc}
+\usepackage{tcolorbox}
+\tcbuselibrary{skins, breakable}
+
+\definecolor{qcDarkBlue}{HTML}{1A365D}
+\definecolor{qcAccentBlue}{HTML}{2B6CB0}
+\definecolor{qcLightBlue}{HTML}{EBF8FF}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=qcDarkBlue,
+    urlcolor=qcAccentBlue,
+    citecolor=qcDarkBlue
+}
+
+\newcommand{\ket}[1]{|#1\rangle}
+\newcommand{\bra}[1]{\langle#1|}
+\newcommand{\braket}[2]{\langle#1|#2\rangle}
+\newcommand{\ketbra}[2]{|#1\rangle\langle#2|}
+
+\lstset{
+    basicstyle=\small\ttfamily,
+    keywordstyle=\color{qcAccentBlue}\bfseries,
+    commentstyle=\color{gray},
+    stringstyle=\color{teal},
+    backgroundcolor=\color{qcLightBlue!30},
+    frame=single,
+    rulecolor=\color{gray!30},
+    breaklines=true,
+    tabsize=4,
+    showstringspaces=false
+}
+
+\theoremstyle{definition}
+\newtheorem{definition}{정의}[section]
+\newtheorem{theorem}{정리}[section]
+\newtheorem{example}{예제}[section]
+
+\newtcolorbox{notebox}[1]{
+    colback=qcLightBlue!50,
+    colframe=qcDarkBlue,
+    fonttitle=\bfseries\color{white},
+    title=#1,
+    arc=2mm,
+    left=8pt, right=8pt, top=8pt, bottom=8pt
+}
+
+\newtcolorbox{cautionbox}[1]{
+    colback=red!5,
+    colframe=red!75!black,
+    fonttitle=\bfseries\color{white},
+    title=#1,
+    arc=2mm,
+    left=8pt, right=8pt, top=8pt, bottom=8pt
+}
+
+\newtcolorbox{worksheetbox}[1]{
+    colback=blue!3,
+    colframe=qcAccentBlue,
+    fonttitle=\bfseries\color{white},
+    title=#1,
+    arc=2mm,
+    left=8pt, right=8pt, top=8pt, bottom=8pt
+}
+
+\title{\textbf{\Huge ‘양자컴퓨팅 이론\&실습 4주 부트캠프’}\\[0.4em]
+\LARGE Day 1 공식 강의노트: 단일 큐비트와 상태벡터 (NumPy 기초)\\[0.2em]
+\large 선형대수학으로 정립하는 양자 정보의 표현, 변환, 측정}
+\author{\textbf{강사}: 서상협 ((주)큐렌스 / Q-Rence)}
+\date{2026년 11월 11일}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+본 강의노트는 4주 부트캠프의 1일차(Day 1) 공식 교재입니다. 고전 컴퓨터의 0과 1 스위치 개념에서 출발하여, 2차원 복소 힐베르트 공간($\mathbb{C}^2$)에서 큐비트(Qubit) 상태벡터가 갖는 물리적·수학적 의미를 정립합니다. Dirac 브라-켓 표기법, 사영 측정과 Born 규칙, $2 \times 2$ 유니터리 연산자, 상대 위상과 양자 간섭, 그리고 Bloch 구면의 기하학적 매핑을 학습하고, 손계산 워크시트와 순수 Python/NumPy 시뮬레이션을 통해 직접 검증합니다.
+\end{abstract}
+
+\vspace{0.5cm}
+
+% =============================================================================
+\section{정보의 물리적 실체: 비트에서 큐비트로}
+% =============================================================================
+고전 컴퓨터 공학에서 정보의 기본 단위는 $0$ 또는 $1$ 중 하나의 확정된 스위치 전압 상태를 갖는 \textbf{고전 비트(Classical Bit)}입니다. 연산은 불 대수(Boolean Logic)에 기반한 논리 게이트($AND, OR, NOT$)로 수행되며 상태는 언제나 결정론적으로 추적됩니다.
+
+반면 양자 정보의 최소 단위인 \textbf{큐비트(Qubit, Quantum Bit)}는 전자의 스핀(Spin), 초전도 조셉슨 접합의 전하 상태, 광자의 편광 등 미시 물리계의 2-준위 양자역학계(Two-level Quantum System)를 기반으로 합니다.
+이 시스템은 고전적인 0과 1의 이분법을 넘어, 2차원 복소 내적 공간인 \textbf{복소 힐베르트 공간 $\mathbb{C}^2$}의 단위벡터(Unit Vector)로 기술됩니다.
+
+\begin{notebox}{Day 1 학습의 3대 핵심 기둥}
+\begin{enumerate}
+    \item \textbf{[상태의 표현]}: Dirac 브라-켓 표기법을 통해 고전 비트 $0, 1$을 직교하는 정규직교기저 열벡터 $\ket{0}, \ket{1}$로 정의하고, 임의의 중첩 상태를 복소 선형결합 $\ket{\psi} = \alpha\ket{0} + \beta\ket{1}$로 기술합니다.
+    \item \textbf{[상태의 관측]}: 복소 진폭 $\alpha, \beta$ 자체는 직접 측정할 수 없으며, 사영 측정 시 Born 규칙 $P(x) = |\alpha_x|^2$에 의해 확률적으로 하나의 기저로 비가역적 붕괴(State Collapse)가 일어납니다.
+    \item \textbf{[상태의 변환]}: 양자 상태를 조작하는 양자 게이트는 확률 보존($\|\ket{\psi}\|=1$)을 만족하는 \textbf{유니터리 행렬($U^* U = I$)}로 표현되며, 이는 기하학적으로 복소 벡터의 길이를 1로 완벽히 보존하는 회전 변환입니다.
+\end{enumerate}
+\end{notebox}
+
+% =============================================================================
+\section{계산 기저(Computational Basis)와 상태벡터}
+% =============================================================================
+2차원 복소 힐베르트 공간 $\mathbb{C}^2$의 표준 정규직교기저는 Dirac 표기법으로 다음과 같이 정의됩니다:
+$$\ket{0} = \begin{pmatrix} 1 \\ 0 \end{pmatrix}, \qquad \ket{1} = \begin{pmatrix} 0 \\ 1 \end{pmatrix}$$
+이 두 기저는 서로 직교하며 크기가 1인 정규직교 관계를 만족합니다:
+$$\braket{0}{0} = 1, \quad \braket{1}{1} = 1, \quad \braket{0}{1} = 0, \quad \braket{1}{0} = 0$$
+
+임의의 단일 큐비트 상태 $\ket{\psi}$는 이 두 기저벡터의 복소 선형결합(중첩)으로 표현됩니다:
+$$\ket{\psi} = \alpha\ket{0} + \beta\ket{1} = \begin{pmatrix} \alpha \\ \beta \end{pmatrix} \quad (\alpha, \beta \in \mathbb{C})$$
+여기서 $\alpha$와 $\beta$를 \textbf{복소 확률 진폭(Complex Probability Amplitude)}이라 부릅니다.
+
+\subsection{왜 실수가 아니라 복소수(\texorpdfstring{$\mathbb{C}$}{C})인가?}
+양자 상태는 입자의 확률적 위치뿐만 아니라 파동의 성질을 동시에 지닙니다. 파동의 특성을 기술하기 위해서는 진폭의 크기뿐만 아니라 \textbf{회전 각도(위상, Phase)}가 필수적입니다. 복소수의 극형식 $z = r e^{i\phi}$를 도입함으로써, 하나의 수치 안에 크기 $r$과 파동 회전 각도 $\phi$를 동시에 완벽히 압축할 수 있습니다.
+
+% =============================================================================
+\section{사영 측정(Projection Measurement)과 Born 규칙}
+% =============================================================================
+상태벡터 $\ket{\psi} = \begin{pmatrix} \alpha \\ \beta \end{pmatrix}$를 계산 기저($Z$축)에서 측정할 때 관측되는 물리적 규칙은 다음과 같습니다:
+
+\begin{definition}[Born 규칙과 사영 붕괴]
+\begin{enumerate}
+    \item \textbf{측정 확률}: 기저 $\ket{0}$이 관측될 확률 $P(0)$과 $\ket{1}$이 관측될 확률 $P(1)$은 복소 진폭의 크기의 제곱에 비례합니다:
+    $$P(0) = |\braket{0}{\psi}|^2 = |\alpha|^2, \qquad P(1) = |\braket{1}{\psi}|^2 = |\beta|^2$$
+    \item \textbf{정규화 조건}: 전체 확률의 합은 반드시 $1$이어야 하므로 상태벡터는 언제나 단위벡터여야 합니다:
+    $$\|\ket{\psi}\|^2 = |\alpha|^2 + |\beta|^2 = 1$$
+    \item \textbf{사영 붕괴}: 측정이 일어나는 순간, 중첩 상태는 관측된 고유 상태($\ket{0}$ 또는 $\ket{1}$)로 비가역적으로 붕괴합니다.
+\end{enumerate}
+\end{definition}
+
+\begin{worksheetbox}{[강사 수식 시연 1] 임의 복소 벡터의 정규화 및 관측 확률 유도}
+\textbf{특강 시연 목표}: 비정규화된 복소 벡터 $\ket{v} = \begin{pmatrix} 1+i \\ \sqrt{2} \end{pmatrix}$가 주어졌을 때, 벡터의 노름을 나누어 단위벡터 상태 $\ket{\psi}$로 정규화하고 Born 규칙에 따른 각 기저의 측정 확률을 단계별로 도출합니다.
+
+\textbf{[수식 유도 전개]}:
+\begin{enumerate}
+    \item 각 성분의 크기 제곱 계산:
+    $$|1+i|^2 = 1^2 + 1^2 = 2, \qquad |\sqrt{2}|^2 = 2$$
+    \item 벡터의 노름(Norm) 계산:
+    $$\|\ket{v}\| = \sqrt{|1+i|^2 + |\sqrt{2}|^2} = \sqrt{2 + 2} = \sqrt{4} = 2$$
+    \item 정규화 상태벡터:
+    $$\ket{\psi} = \frac{\ket{v}}{\|\ket{v}\|} = \begin{pmatrix} \frac{1+i}{2} \\ \frac{\sqrt{2}}{2} \end{pmatrix} = \begin{pmatrix} \frac{1+i}{2} \\ \frac{1}{\sqrt{2}} \end{pmatrix}$$
+    \item 관측 확률:
+    $$P(0) = \left|\frac{1+i}{2}\right|^2 = \frac{2}{4} = \frac{1}{2} \; (50\%), \qquad P(1) = \left|\frac{1}{\sqrt{2}}\right|^2 = \frac{1}{2} \; (50\%)$$
+    전체 확률의 합은 $P(0) + P(1) = 1/2 + 1/2 = 1$로 정규화 조건을 완벽히 만족합니다.
+\end{enumerate}
+\end{worksheetbox}
+
+% =============================================================================
+\section{단일 큐비트 기본 게이트와 유니터리 연산자}
+% =============================================================================
+양자 시스템의 시간 진화는 확률의 총합을 항상 보존해야 하므로, 모든 양자 게이트는 \textbf{유니터리 행렬($U^* U = I$)}로 기술됩니다.
+단일 큐비트 연산에서 사용되는 핵심 6대 게이트는 다음과 같습니다:
+
+\begin{enumerate}
+    \item \textbf{Pauli-$X$ 게이트 (비트 반전)}:
+    $$X = \begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix}, \quad X\ket{0} = \ket{1}, \quad X\ket{1} = \ket{0}$$
+    \item \textbf{Pauli-$Y$ 게이트 (비트 및 위상 동시 반전)}:
+    $$Y = \begin{pmatrix} 0 & -i \\ i & 0 \end{pmatrix}, \quad Y\ket{0} = i\ket{1}, \quad Y\ket{1} = -i\ket{0}$$
+    \item \textbf{Pauli-$Z$ 게이트 (위상 반전)}:
+    $$Z = \begin{pmatrix} 1 & 0 \\ 0 & -1 \end{pmatrix}, \quad Z\ket{0} = \ket{0}, \quad Z\ket{1} = -\ket{1}$$
+    \item \textbf{Hadamard ($H$) 게이트 (균등 중첩 생성)}:
+    $$H = \frac{1}{\sqrt{2}}\begin{pmatrix} 1 & 1 \\ 1 & -1 \end{pmatrix}, \quad H\ket{0} = \ket{+} = \frac{\ket{0}+\ket{1}}{\sqrt{2}}, \quad H\ket{1} = \ket{-} = \frac{\ket{0}-\ket{1}}{\sqrt{2}}$$
+    \item \textbf{위상 게이트 ($S, T$ 게이트)}:
+    $$S = \begin{pmatrix} 1 & 0 \\ 0 & i \end{pmatrix} \; (\text{90}^\circ \text{ 회전}), \qquad T = \begin{pmatrix} 1 & 0 \\ 0 & e^{i\pi/4} \end{pmatrix} \; (\text{45}^\circ \text{ 회전})$$
+\end{enumerate}
+
+% =============================================================================
+\section{상대 위상(Relative Phase)과 양자 간섭의 원천}
+% =============================================================================
+전체 위상 $e^{i\theta}\ket{\psi}$는 측정 확률 $|\alpha e^{i\theta}|^2 = |\alpha|^2$을 전혀 바꾸지 않으므로 물리적으로 관측 불가능합니다.
+반면 상대 위상(Relative Phase)은 파동의 보강 간섭과 상쇄 간섭을 직접 제어하는 양자컴퓨팅의 핵심 무기입니다.
+
+\begin{worksheetbox}{[강사 수식 시연 2] $\ket{+}$와 $\ket{-}$에 대한 Hadamard 게이트 간섭 증명}
+\textbf{특강 시연 목표}: 두 중첩 상태 $\ket{+} = \frac{\ket{0}+\ket{1}}{\sqrt{2}}$와 $\ket{-} = \frac{\ket{0}-\ket{1}}{\sqrt{2}}$에 Hadamard 연산자 $H$를 작용시킬 때, 파동의 보강 간섭과 상쇄 간섭이 어떻게 일어나 특정 기저로 100\% 수렴하는지 수식으로 전개합니다.
+
+\textbf{[수식 유도 전개]}:
+\begin{enumerate}
+    \item $H\ket{+}$의 작용:
+    $$H\ket{+} = \frac{1}{\sqrt{2}}(H\ket{0} + H\ket{1}) = \frac{1}{\sqrt{2}}\left( \frac{\ket{0}+\ket{1}}{\sqrt{2}} + \frac{\ket{0}-\ket{1}}{\sqrt{2}} \right)$$
+    $$= \frac{1}{2}(\ket{0} + \ket{1} + \ket{0} - \ket{1}) = \frac{2\ket{0} + 0\ket{1}}{2} = \ket{0}$$
+    $\ket{1}$의 진폭 $+1$과 $-1$이 상쇄 간섭(Destructive Interference)을 일으켜 소멸하고, $\ket{0}$만 보강 간섭(Constructive Interference)되어 100\% 관측됩니다!
+    \item $H\ket{-}$의 작용:
+    $$H\ket{-} = \frac{1}{\sqrt{2}}(H\ket{0} - H\ket{1}) = \frac{1}{\sqrt{2}}\left( \frac{\ket{0}+\ket{1}}{\sqrt{2}} - \frac{\ket{0}-\ket{1}}{\sqrt{2}} \right)$$
+    $$= \frac{1}{2}(\ket{0} + \ket{1} - \ket{0} + \ket{1}) = \frac{0\ket{0} + 2\ket{1}}{2} = \ket{1}$$
+    $\ket{0}$의 진폭이 상쇄 소멸하고, $\ket{1}$이 보강되어 100\% 확률로 $\ket{1}$이 관측됩니다!
+\end{enumerate}
+\end{worksheetbox}
+
+% =============================================================================
+\section{블로흐 구 (Bloch Sphere) 기하학적 매개화}
+% =============================================================================
+단일 큐비트의 순수 상태 $\ket{\psi}$는 2개의 실수 각도 $(\theta, \phi)$를 통해 3차원 단위 구면 표면 위의 점으로 1:1 매개화됩니다:
+$$\ket{\psi} = \cos\frac{\theta}{2}\ket{0} + e^{i\phi}\sin\frac{\theta}{2}\ket{1} \quad (0 \le \theta \le \pi, \; 0 \le \phi < 2\pi)$$
+\begin{itemize}
+    \item \textbf{위도각 $\theta$}: 0과 1의 관측 확률을 결정합니다 ($P(0) = \cos^2\frac{\theta}{2}, \; P(1) = \sin^2\frac{\theta}{2}$). 북극은 $\ket{0}$ ($\theta=0$), 남극은 $\ket{1}$ ($\theta=\pi$).
+    \item \textbf{경도각 $\phi$}: $XY$ 적도 평면 상에서 회전하는 상대 위상각을 결정합니다.
+    \item \textbf{주요 6대 기저점}:
+    $$\text{북극: } \ket{0}, \quad \text{남극: } \ket{1}, \quad +X\text{축: } \ket{+}, \quad -X\text{축: } \ket{-}, \quad +Y\text{축: } \ket{+i}, \quad -Y\text{축: } \ket{-i}$$
+\end{itemize}
+
+% =============================================================================
+\section{NumPy 인터랙티브 실습 가이드 (Day 1 2부)}
+% =============================================================================
+2부 75분 실습에서는 외부 양자 라이브러리 없이, \textbf{순수 Python과 NumPy}만으로 복소 기저와 유니터리 연산자를 직접 구축합니다:
+
+\begin{lstlisting}[language=Python]
+import numpy as np
+
+# 1. 기저 정의 및 6대 게이트 구성
+ket0 = np.array([[1.0], [0.0]], dtype=complex)
+ket1 = np.array([[0.0], [1.0]], dtype=complex)
+
+H = (1 / np.sqrt(2)) * np.array([[1, 1], [1, -1]], dtype=complex)
+X = np.array([[0, 1], [1, 0]], dtype=complex)
+Z = np.array([[1, 0], [0, -1]], dtype=complex)
+
+# 2. H^2 = I 가역성 및 상대 위상 간섭 검증
+plus  = H @ ket0   # (|0> + |1>) / sqrt(2)
+minus = H @ ket1   # (|0> - |1>) / sqrt(2)
+
+assert np.allclose(H @ plus, ket0), "H|+>는 100% |0>으로 보강 간섭!"
+assert np.allclose(H @ minus, ket1), "H|->는 100% |1>로 상쇄 간섭!"
+
+# 3. 2부 도전 챌린지: H * Z * H * X |0> 상태 추적
+psi_final = H @ Z @ H @ X @ ket0
+assert np.allclose(psi_final, ket0), "H Z H = X이므로 X * X = I가 되어 원래 |0> 복귀!"
+print("Day 1 NumPy 검증 완료!")
+\end{lstlisting}
+
+\end{document}

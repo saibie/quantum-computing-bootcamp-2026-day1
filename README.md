@@ -54,8 +54,8 @@ uv run jupyter lab --notebook-dir=hands_on
 ```text
 ├── docs/                               # 강의 교재 및 참고 문서 (PDF)
 │   ├── day1_statevector.pdf            # Day 1 강의 슬라이드 (단일 큐비트와 상태벡터)
-│   ├── syllabus_12hours.pdf            # 4주 전체 강의 계획서 및 커리큘럼
-│   └── lecture_notes_12hours.pdf       # 수식/원리 통합 렉처노트
+│   ├── lecture_notes_day1.pdf          # Day 1 핵심 수식/원리 집중 렉처노트
+│   └── syllabus_12hours.pdf            # 4주 전체 강의 계획서 및 커리큘럼
 │
 ├── hands_on/                           # 실습 코드
 │   ├── day1_numpy_statevector.ipynb    # [Day 1 실습] 상태벡터, 브라켓 표기법, 단일 큐비트 게이트

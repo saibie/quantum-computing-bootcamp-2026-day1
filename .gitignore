@@ -17,9 +17,16 @@ __pycache__/
 *.snm
 *.toc
 *.vrb
+*.fls
+*.fdb_latexmk
 *.synctex.gz
+*.xdv
 
-# OS and compressed files
-*.zip
+# Editor and OS files
+.vscode/
+.idea/
 .DS_Store
 Thumbs.db
+
+# Compressed archives
+*.zip

@@ -25,7 +25,7 @@
     basicstyle=\ttfamily\scriptsize,
     keywordstyle=\color{qcKeyword}\bfseries,
     stringstyle=\color{qcString},
-    commentstyle=\color{qcComment}\itshape,
+    commentstyle=\color{qcComment},
     breaklines=true,
     showstringspaces=false,
     tabsize=4,
@@ -65,49 +65,36 @@
 }
 \makeatother
 
-% Blocks (Tight padding to prevent vertical overflow)
-\usepackage{tcolorbox}
-\tcbuselibrary{skins, breakable}
+% Native Beamer Blocks (Rounded, theme-matched, 100% pause-compatible)
+\setbeamertemplate{blocks}[rounded][shadow=false]
 
-\newtcolorbox{qcblock}[1]{
-    colback=qcLightGray,
-    colframe=qcAccentBlue,
-    fonttitle=\bfseries\footnotesize\color{white},
-    coltitle=white,
-    title={#1},
-    arc=1.5mm,
-    boxrule=0.8pt,
-    left=5pt, right=5pt, top=3pt, bottom=3pt,
-    boxsep=1pt,
-    before=\vspace{2pt},
-    after=\vspace{2pt}
-}
+% 1. Standard block (formerly qcblock)
+\setbeamercolor{block title}{fg=white, bg=qcAccentBlue}
+\setbeamercolor{block body}{fg=qcDarkBlue, bg=qcLightGray}
+\setbeamerfont{block title}{size=\footnotesize, series=\bfseries}
 
-\newtcolorbox{qcalert}[1]{
-    colback=red!5,
-    colframe=red!75!black,
-    fonttitle=\bfseries\footnotesize\color{white},
-    title={#1},
-    arc=1.5mm,
-    boxrule=0.8pt,
-    left=5pt, right=5pt, top=3pt, bottom=3pt,
-    boxsep=1pt,
-    before=\vspace{2pt},
-    after=\vspace{2pt}
-}
+% 2. Alertblock (formerly qcalert)
+\setbeamercolor{block title alerted}{fg=white, bg=red!75!black}
+\setbeamercolor{block body alerted}{fg=black, bg=red!5}
+\setbeamerfont{block title alerted}{size=\footnotesize, series=\bfseries}
 
-\newtcolorbox{qctip}[1]{
-    colback=green!5,
-    colframe=qcTeal,
-    fonttitle=\bfseries\footnotesize\color{white},
-    title={#1},
-    arc=1.5mm,
-    boxrule=0.8pt,
-    left=5pt, right=5pt, top=3pt, bottom=3pt,
-    boxsep=1pt,
-    before=\vspace{2pt},
-    after=\vspace{2pt}
-}
+% 3. Exampleblock (formerly qctip)
+\setbeamercolor{block title example}{fg=white, bg=qcTeal}
+\setbeamercolor{block body example}{fg=black, bg=green!5}
+\setbeamerfont{block title example}{size=\footnotesize, series=\bfseries}
+
+% Tight vertical block spacing
+\addtobeamertemplate{block begin}{\vspace{-3pt}}{}
+\addtobeamertemplate{block end}{}{\vspace{-4pt}}
+\addtobeamertemplate{block alerted begin}{\vspace{-3pt}}{}
+\addtobeamertemplate{block alerted end}{}{\vspace{-4pt}}
+\addtobeamertemplate{block example begin}{\vspace{-3pt}}{}
+\addtobeamertemplate{block example end}{}{\vspace{-4pt}}
+
+% Backward compatibility aliases
+\newenvironment{qcblock}[1]{\begin{block}{#1}}{\end{block}}
+\newenvironment{qcalert}[1]{\begin{alertblock}{#1}}{\end{alertblock}}
+\newenvironment{qctip}[1]{\begin{exampleblock}{#1}}{\end{exampleblock}}
 
 % Quantum Dirac Notation Macros
 \newcommand{\ket}[1]{|#1\rangle}

@@ -84,33 +84,33 @@
 \maketitle
 
 \begin{abstract}
-본 강의노트는 4주 부트캠프의 1일차(Day 1) 공식 교재입니다. 고전 컴퓨터의 0과 1 스위치 개념에서 출발하여, 2차원 복소 힐베르트 공간($\mathbb{C}^2$)에서 큐비트(Qubit) 상태벡터가 갖는 물리적·수학적 의미를 정립합니다. Dirac 브라-켓 표기법, 사영 측정과 Born 규칙, $2 \times 2$ 유니터리 연산자, 상대 위상과 양자 간섭, 그리고 Bloch 구면의 기하학적 매핑을 학습하고, 손계산 워크시트와 순수 Python/NumPy 시뮬레이션을 통해 직접 검증합니다.
+본 강의노트는 4주 부트캠프의 1일차(Day 1) 공식 교재입니다. 고전 컴퓨터의 0과 1 스위치 개념에서 출발하여, 2차원 복소 힐베르트 공간($\mathbb{C}^2$)에서 큐비트(Qubit) 상태벡터가 갖는 물리적·수학적 의미를 정립합니다. Dirac 브라-켓 표기법, 사영 측정과 Born 규칙, 블로흐 구면(Bloch Sphere)의 기하학적 매핑과 6대 기저 상태, 크기를 보존하는 $2 \times 2$ 유니터리 회전 연산자, 그리고 Hadamard 게이트의 기저 변환과 자기 역원성($H^2=I$)을 체계적으로 학습하고, 손계산 워크시트를 통해 직접 유도·검증합니다.
 \end{abstract}
 
-\vspace{0.5cm}
+\vspace{0.3cm}
+
+\begin{notebox}{Day 1 학습의 3대 핵심 기둥}
+\begin{enumerate}
+    \item \textbf{[상태의 표현]}: Dirac 브라-켓 표기법을 통해 고전 비트 $0, 1$을 직교하는 정규직교기저 열벡터 $\ket{0}, \ket{1}$로 정의하고, 임의의 중첩 상태를 복소 선형결합 $\ket{\psi} = \alpha\ket{0} + \beta\ket{1}$로 기술합니다.
+    \item \textbf{[상태의 관측]}: 복소 진폭 $\alpha, \beta$ 자체는 직접 측정할 수 없으며, 사영 측정 시 Born 규칙 $P(x) = |\alpha_x|^2$에 의해 확률적으로 하나의 기저로 비가역적 붕괴(State Collapse)가 일어납니다.
+    \item \textbf{[상태의 변환과 기하]}: 양자 상태를 조작하는 게이트는 확률 보존($\|\ket{\psi}\|=1$)을 만족하는 \textbf{유니터리 행렬($U^* U = I$)}이며, 이는 기하학적으로 블로흐 구(Bloch Sphere) 표면 위에서 벡터의 길이를 1로 완벽히 보존하는 3차원 강체 회전 변환입니다.
+\end{enumerate}
+\end{notebox}
 
 % =============================================================================
 \section{정보의 물리적 실체: 비트에서 큐비트로}
 % =============================================================================
 고전 컴퓨터 공학에서 정보의 기본 단위는 $0$ 또는 $1$ 중 하나의 확정된 스위치 전압 상태를 갖는 \textbf{고전 비트(Classical Bit)}입니다. 연산은 불 대수(Boolean Logic)에 기반한 논리 게이트($AND, OR, NOT$)로 수행되며 상태는 언제나 결정론적으로 추적됩니다.
 
-반면 양자 정보의 최소 단위인 \textbf{큐비트(Qubit, Quantum Bit)}는 전자의 스핀(Spin), 초전도 조셉슨 접합의 전하 상태, 광자의 편광 등 미시 물리계의 2-준위 양자역학계(Two-level Quantum System)를 기반으로 합니다.
+반면 양자 정보의 최소 단위인 \textbf{큐비트(Qubit, Quantum Bit)}는 전자의 스핀(Spin), 초전도 조셉슨 접합의 전하·자속 상태, 포획 이온의 에너지 준위, 광자의 편광 등 미시 물리계의 2-준위 양자역학계(Two-level Quantum System)를 기반으로 합니다.
 이 시스템은 고전적인 0과 1의 이분법을 넘어, 2차원 복소 내적 공간인 \textbf{복소 힐베르트 공간 $\mathbb{C}^2$}의 단위벡터(Unit Vector)로 기술됩니다.
-
-\begin{notebox}{Day 1 학습의 3대 핵심 기둥}
-\begin{enumerate}
-    \item \textbf{[상태의 표현]}: Dirac 브라-켓 표기법을 통해 고전 비트 $0, 1$을 직교하는 정규직교기저 열벡터 $\ket{0}, \ket{1}$로 정의하고, 임의의 중첩 상태를 복소 선형결합 $\ket{\psi} = \alpha\ket{0} + \beta\ket{1}$로 기술합니다.
-    \item \textbf{[상태의 관측]}: 복소 진폭 $\alpha, \beta$ 자체는 직접 측정할 수 없으며, 사영 측정 시 Born 규칙 $P(x) = |\alpha_x|^2$에 의해 확률적으로 하나의 기저로 비가역적 붕괴(State Collapse)가 일어납니다.
-    \item \textbf{[상태의 변환]}: 양자 상태를 조작하는 양자 게이트는 확률 보존($\|\ket{\psi}\|=1$)을 만족하는 \textbf{유니터리 행렬($U^* U = I$)}로 표현되며, 이는 기하학적으로 복소 벡터의 길이를 1로 완벽히 보존하는 회전 변환입니다.
-\end{enumerate}
-\end{notebox}
 
 % =============================================================================
 \section{계산 기저(Computational Basis)와 상태벡터}
 % =============================================================================
 2차원 복소 힐베르트 공간 $\mathbb{C}^2$의 표준 정규직교기저는 Dirac 표기법으로 다음과 같이 정의됩니다:
 $$\ket{0} = \begin{pmatrix} 1 \\ 0 \end{pmatrix}, \qquad \ket{1} = \begin{pmatrix} 0 \\ 1 \end{pmatrix}$$
-이 두 기저는 서로 직교하며 크기가 1인 정규직교 관계를 만족합니다:
+이 두 기저는 서로 직교하며 크기가 1인 정규직교(Orthonormal) 관계를 만족합니다:
 $$\braket{0}{0} = 1, \quad \braket{1}{1} = 1, \quad \braket{0}{1} = 0, \quad \braket{1}{0} = 0$$
 
 임의의 단일 큐비트 상태 $\ket{\psi}$는 이 두 기저벡터의 복소 선형결합(중첩)으로 표현됩니다:
@@ -135,104 +135,160 @@ $$\ket{\psi} = \alpha\ket{0} + \beta\ket{1} = \begin{pmatrix} \alpha \\ \beta \e
 \end{enumerate}
 \end{definition}
 
-\begin{worksheetbox}{[강사 수식 시연 1] 임의 복소 벡터의 정규화 및 관측 확률 유도}
-\textbf{특강 시연 목표}: 비정규화된 복소 벡터 $\ket{v} = \begin{pmatrix} 1+i \\ \sqrt{2} \end{pmatrix}$가 주어졌을 때, 벡터의 노름을 나누어 단위벡터 상태 $\ket{\psi}$로 정규화하고 Born 규칙에 따른 각 기저의 측정 확률을 단계별로 도출합니다.
+\begin{worksheetbox}{[손계산 워크시트] 내적 계산을 통한 단위벡터 검증 및 사영 붕괴 확인}
+\textbf{특강 시연 문제}: 복소 상태벡터 $\ket{\psi} = \frac{1}{\sqrt{3}}\ket{0} + \sqrt{\frac{2}{3}}i\ket{1}$가 주어졌을 때, 벡터의 단위벡터 여부를 내적으로 검증하고, 각 기저의 측정 확률 및 사영 붕괴 후 상태를 단계별로 도출합니다.
 
 \textbf{[수식 유도 전개]}:
 \begin{enumerate}
-    \item 각 성분의 크기 제곱 계산:
-    $$|1+i|^2 = 1^2 + 1^2 = 2, \qquad |\sqrt{2}|^2 = 2$$
-    \item 벡터의 노름(Norm) 계산:
-    $$\|\ket{v}\| = \sqrt{|1+i|^2 + |\sqrt{2}|^2} = \sqrt{2 + 2} = \sqrt{4} = 2$$
-    \item 정규화 상태벡터:
-    $$\ket{\psi} = \frac{\ket{v}}{\|\ket{v}\|} = \begin{pmatrix} \frac{1+i}{2} \\ \frac{\sqrt{2}}{2} \end{pmatrix} = \begin{pmatrix} \frac{1+i}{2} \\ \frac{1}{\sqrt{2}} \end{pmatrix}$$
-    \item 관측 확률:
-    $$P(0) = \left|\frac{1+i}{2}\right|^2 = \frac{2}{4} = \frac{1}{2} \; (50\%), \qquad P(1) = \left|\frac{1}{\sqrt{2}}\right|^2 = \frac{1}{2} \; (50\%)$$
-    전체 확률의 합은 $P(0) + P(1) = 1/2 + 1/2 = 1$로 정규화 조건을 완벽히 만족합니다.
+    \item \textbf{내적 계산을 통한 단위벡터 검증}:
+    $$\braket{\psi}{\psi} = \begin{pmatrix} \frac{1}{\sqrt{3}} & -\sqrt{\frac{2}{3}}i \end{pmatrix}\begin{pmatrix} \frac{1}{\sqrt{3}} \\ \sqrt{\frac{2}{3}}i \end{pmatrix} = \left|\frac{1}{\sqrt{3}}\right|^2 + \left|\sqrt{\frac{2}{3}}i\right|^2 = \frac{1}{3} + \frac{2}{3} = \mathbf{1}$$
+    \item \textbf{Born 규칙에 따른 측정 확률}:
+    $$P(0) = \left|\frac{1}{\sqrt{3}}\right|^2 = \frac{1}{3} \approx \mathbf{33.3\%}, \qquad P(1) = \left|\sqrt{\frac{2}{3}}i\right|^2 = \frac{2}{3} \approx \mathbf{66.7\%}$$
+    \item \textbf{사영 붕괴}: 만약 계측기에서 $0$이 관측되었다면, 측정 직전 공존하던 허수 진폭 $\sqrt{\frac{2}{3}}i$는 완전히 소멸하고 상태벡터는 해당 고유 기저로 즉각 붕괴합니다:
+    $$\ket{\psi_{\mathrm{after}}} = \ket{0} = \begin{pmatrix} 1 \\ 0 \end{pmatrix}$$
 \end{enumerate}
 \end{worksheetbox}
+
+% =============================================================================
+\section{블로흐 구 (Bloch Sphere) 기하학적 매개화와 6대 기저 상태}
+% =============================================================================
+수학적으로 단일 큐비트의 상태는 2차원 복소 벡터 공간 $\mathbb{C}^2$에 존재하지만, 물리적으로 순수 상태(Pure State)는 \textbf{3차원 단위 구면(Unit Sphere) 표면 위의 한 점}으로 1:1 완벽히 매핑됩니다. 이 기하학적 표현을 \textbf{블로흐 구(Bloch Sphere)}라 부릅니다.
+
+\subsection{블로흐 매개화 공식과 물리적 실체}
+정규화 조건($|\alpha|^2 + |\beta|^2 = 1$)과 전역 위상($Global Phase$)의 물리적 불관측성을 고려하면, 임의의 순수 상태 $\ket{\psi}$는 2개의 실수 각도 $(\theta, \phi)$로 유일하게 매개화됩니다:
+$$\ket{\psi} = \cos\frac{\theta}{2}\ket{0} + e^{i\phi}\sin\frac{\theta}{2}\ket{1} \quad (0 \le \theta \le \pi, \; 0 \le \phi < 2\pi)$$
+
+\begin{center}
+\begin{tikzpicture}[scale=1.1, >=Latex]
+    \shade[ball color=qcAccentBlue!15, opacity=0.35] (0, 0) circle (1.5cm);
+    \draw[thick, qcDarkBlue!70] (0, 0) circle (1.5cm);
+
+    % 적도면 타원
+    \draw[dashed, gray!60, thin] (1.5, 0) arc (0:180:1.5cm and 0.45cm);
+    \draw[thick, qcAccentBlue!70] (-1.5, 0) arc (180:360:1.5cm and 0.45cm);
+
+    % 자오선 타원
+    \draw[dashed, gray!40, thin] (0, 1.5) arc (90:270:0.45cm and 1.5cm);
+    \draw[qcAccentBlue!30, thin] (0, 1.5) arc (90:-90:0.45cm and 1.5cm);
+
+    % 좌표축
+    \draw[->, thick, qcDarkBlue] (0, -1.9) -- (0, 2.1) node[above] {\textbf{Z}};
+    \draw[->, thick, red!80!black] (0, 0) -- (-1.25, -0.68) node[below left] {\textbf{X}};
+    \draw[dashed, red!50!gray] (0, 0) -- (1.0, 0.55);
+    \draw[->, thick, teal] (0, 0) -- (1.95, 0) node[right] {\textbf{Y}};
+    \draw[dashed, teal!50!gray] (0, 0) -- (-1.5, 0);
+
+    % 상태벡터 |psi>
+    \coordinate (O) at (0, 0);
+    \coordinate (P) at (0.85, 1.05);
+    \coordinate (Pxy) at (0.85, -0.2);
+
+    \draw[dashed, gray!75, thick] (P) -- (Pxy);
+    \draw[dashed, gray!75, thick] (O) -- (Pxy);
+    \draw[->, ultra thick, red!85!black] (O) -- (P) node[above right] {\small $\ket{\psi}$};
+    \fill[red!85!black] (P) circle (2pt);
+
+    % 각도 theta, phi
+    \draw[-{Latex[length=3pt, width=2.2pt]}, semithick, teal] (0, 0.6) arc (90:51:0.6cm);
+    \node[teal] at (0.22, 0.72) {\scriptsize $\theta$};
+    \draw[-{Latex[length=3pt, width=2.2pt]}, semithick, purple] (-0.3, -0.16) arc (-150:-12:0.35cm and 0.18cm);
+    \node[purple] at (0.05, -0.34) {\scriptsize $\phi$};
+
+    % 극점 표시
+    \fill[qcDarkBlue] (0, 1.5) circle (2.2pt);
+    \node[right, qcDarkBlue] at (0.05, 1.6) {\small $\ket{0}$ (북극)};
+    \fill[qcDarkBlue] (0, -1.5) circle (2.2pt);
+    \node[right, qcDarkBlue] at (0.05, -1.6) {\small $\ket{1}$ (남극)};
+    \fill[red!80!black] (-1.0, -0.55) circle (2pt);
+    \node[above left, red!80!black] at (-0.95, -0.5) {\small $\ket{+}$};
+    \fill[red!50!gray] (1.0, 0.55) circle (1.8pt);
+    \node[above right, red!60!black] at (0.9, 0.55) {\small $\ket{-}$};
+    \fill[teal] (1.5, 0) circle (2pt);
+    \node[above, teal] at (1.5, 0.08) {\small $\ket{+i}$};
+    \fill[teal!50!gray] (-1.5, 0) circle (1.8pt);
+    \node[above, teal!60!black] at (-1.5, 0.08) {\small $\ket{-i}$};
+\end{tikzpicture}
+\end{center}
+
+\begin{itemize}
+    \item \textbf{스핀 포인터(Spin Pointer)로서의 물리적 본질}:
+    복소 벡터 표현은 수학적 계산의 도구이며, 미시 물리계(전자 스핀, 초전도 큐비트 등)의 실제 물리적 실체는 3차원 공간에서 큐비트가 가리키는 \textbf{스핀 자기 모멘트의 축 방향(단위 방향벡터 $\vec{n} = \langle \vec{\sigma} \rangle$)}입니다.
+    \item \textbf{북극과 남극의 물리적 약속}:
+    블로흐 구의 북극($\theta=0$)은 계의 가장 낮은 에너지 준위인 \textbf{바닥 상태(Ground State, $E_0$) $\ket{0}$}에 대응하며, 남극($\theta=\pi$)은 고에너지 준위인 \textbf{들뜬 상태(Excited State, $E_1$) $\ket{1}$}에 대응합니다.
+    \item \textbf{왜 각도가 $\theta/2$인가?}:
+    복소 힐베르트 공간 $\mathbb{C}^2$에서 두 기저 상태 $\ket{0}$과 $\ket{1}$은 서로 수직인 직교 상태($\braket{0}{1} = 0$, 각도 $90^\circ$)입니다. 그러나 3차원 블로흐 구면에서는 북극과 남극으로 정반대($180^\circ$, Antipodal)를 향합니다. 따라서 힐베르트 공간의 내적 각도와 3차원 공간 회전 각도 사이의 1:1 대응을 보장하기 위해 각도에 $1/2$ 계수($\theta/2$)가 부여됩니다.
+\end{itemize}
+
+\subsection{블로흐 구 위의 6대 주요 기저 상태}
+블로흐 구의 $X, Y, Z$ 직교 좌표축과 구면이 만나는 6개의 극점은 양자 알고리즘과 오류 정정에서 가장 핵심적으로 사용되는 6대 표준 기저입니다:
+\begin{enumerate}
+    \item \textbf{$Z$축 (계산 기저, 북극과 남극)}:
+    $$\ket{0} = \begin{pmatrix} 1 \\ 0 \end{pmatrix} \quad (\theta=0, \text{ 북극, 바닥 상태}), \qquad \ket{1} = \begin{pmatrix} 0 \\ 1 \end{pmatrix} \quad (\theta=\pi, \text{ 남극, 들뜬 상태})$$
+    \item \textbf{$X$축 (균등 중첩 기저, 적도면 정면과 배면)}:
+    $$\ket{+} = \frac{\ket{0}+\ket{1}}{\sqrt{2}} = \frac{1}{\sqrt{2}}\begin{pmatrix} 1 \\ 1 \end{pmatrix} \text{ (정면)}, \qquad \ket{-} = \frac{\ket{0}-\ket{1}}{\sqrt{2}} = \frac{1}{\sqrt{2}}\begin{pmatrix} 1 \\ -1 \end{pmatrix} \text{ (배면)}$$
+    위도 $\theta = \frac{\pi}{2}$의 적도면에 위치하며, $0$과 $1$의 측정 확률이 각각 $50\% : 50\%$로 완전 균등합니다.
+    \item \textbf{$Y$축 (복소 위상 기저, 적도면 우측과 좌측)}:
+    $$\ket{+i} = \frac{\ket{0}+i\ket{1}}{\sqrt{2}} = \frac{1}{\sqrt{2}}\begin{pmatrix} 1 \\ i \end{pmatrix} \text{ (우측)}, \qquad \ket{-i} = \frac{\ket{0}-i\ket{1}}{\sqrt{2}} = \frac{1}{\sqrt{2}}\begin{pmatrix} 1 \\ -i \end{pmatrix} \text{ (좌측)}$$
+    적도면 상에서 상대 위상각이 각각 $\phi = +90^\circ, -90^\circ$ 회전된 복소 중첩 상태입니다.
+\end{enumerate}
 
 % =============================================================================
 \section{단일 큐비트 기본 게이트와 유니터리 연산자}
 % =============================================================================
-양자 시스템의 시간 진화는 확률의 총합을 항상 보존해야 하므로, 모든 양자 게이트는 \textbf{유니터리 행렬($U^* U = I$)}로 기술됩니다.
-단일 큐비트 연산에서 사용되는 핵심 6대 게이트는 다음과 같습니다:
+닫힌 양자계의 가역적인 물리적 변화(시간 진화)는 상태벡터의 확률 총합($\|\ket{\psi}\|^2 = 1$)을 영구히 보존해야 합니다. 따라서 모든 양자 게이트는 선형대수학의 \textbf{유니터리 행렬(Unitary Matrix)}로 표현됩니다.
 
-\begin{enumerate}
-    \item \textbf{Pauli-$X$ 게이트 (비트 반전)}:
-    $$X = \begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix}, \quad X\ket{0} = \ket{1}, \quad X\ket{1} = \ket{0}$$
-    \item \textbf{Pauli-$Y$ 게이트 (비트 및 위상 동시 반전)}:
-    $$Y = \begin{pmatrix} 0 & -i \\ i & 0 \end{pmatrix}, \quad Y\ket{0} = i\ket{1}, \quad Y\ket{1} = -i\ket{0}$$
-    \item \textbf{Pauli-$Z$ 게이트 (위상 반전)}:
-    $$Z = \begin{pmatrix} 1 & 0 \\ 0 & -1 \end{pmatrix}, \quad Z\ket{0} = \ket{0}, \quad Z\ket{1} = -\ket{1}$$
-    \item \textbf{Hadamard ($H$) 게이트 (균등 중첩 생성)}:
-    $$H = \frac{1}{\sqrt{2}}\begin{pmatrix} 1 & 1 \\ 1 & -1 \end{pmatrix}, \quad H\ket{0} = \ket{+} = \frac{\ket{0}+\ket{1}}{\sqrt{2}}, \quad H\ket{1} = \ket{-} = \frac{\ket{0}-\ket{1}}{\sqrt{2}}$$
-    \item \textbf{위상 게이트 ($S, T$ 게이트)}:
-    $$S = \begin{pmatrix} 1 & 0 \\ 0 & i \end{pmatrix} \; (\text{90}^\circ \text{ 회전}), \qquad T = \begin{pmatrix} 1 & 0 \\ 0 & e^{i\pi/4} \end{pmatrix} \; (\text{45}^\circ \text{ 회전})$$
-\end{enumerate}
-
-% =============================================================================
-\section{상대 위상(Relative Phase)과 양자 간섭의 원천}
-% =============================================================================
-전체 위상 $e^{i\theta}\ket{\psi}$는 측정 확률 $|\alpha e^{i\theta}|^2 = |\alpha|^2$을 전혀 바꾸지 않으므로 물리적으로 관측 불가능합니다.
-반면 상대 위상(Relative Phase)은 파동의 보강 간섭과 상쇄 간섭을 직접 제어하는 양자컴퓨팅의 핵심 무기입니다.
-
-\begin{worksheetbox}{[강사 수식 시연 2] $\ket{+}$와 $\ket{-}$에 대한 Hadamard 게이트 간섭 증명}
-\textbf{특강 시연 목표}: 두 중첩 상태 $\ket{+} = \frac{\ket{0}+\ket{1}}{\sqrt{2}}$와 $\ket{-} = \frac{\ket{0}-\ket{1}}{\sqrt{2}}$에 Hadamard 연산자 $H$를 작용시킬 때, 파동의 보강 간섭과 상쇄 간섭이 어떻게 일어나 특정 기저로 100\% 수렴하는지 수식으로 전개합니다.
-
-\textbf{[수식 유도 전개]}:
-\begin{enumerate}
-    \item $H\ket{+}$의 작용:
-    $$H\ket{+} = \frac{1}{\sqrt{2}}(H\ket{0} + H\ket{1}) = \frac{1}{\sqrt{2}}\left( \frac{\ket{0}+\ket{1}}{\sqrt{2}} + \frac{\ket{0}-\ket{1}}{\sqrt{2}} \right)$$
-    $$= \frac{1}{2}(\ket{0} + \ket{1} + \ket{0} - \ket{1}) = \frac{2\ket{0} + 0\ket{1}}{2} = \ket{0}$$
-    $\ket{1}$의 진폭 $+1$과 $-1$이 상쇄 간섭(Destructive Interference)을 일으켜 소멸하고, $\ket{0}$만 보강 간섭(Constructive Interference)되어 100\% 관측됩니다!
-    \item $H\ket{-}$의 작용:
-    $$H\ket{-} = \frac{1}{\sqrt{2}}(H\ket{0} - H\ket{1}) = \frac{1}{\sqrt{2}}\left( \frac{\ket{0}+\ket{1}}{\sqrt{2}} - \frac{\ket{0}-\ket{1}}{\sqrt{2}} \right)$$
-    $$= \frac{1}{2}(\ket{0} + \ket{1} - \ket{0} + \ket{1}) = \frac{0\ket{0} + 2\ket{1}}{2} = \ket{1}$$
-    $\ket{0}$의 진폭이 상쇄 소멸하고, $\ket{1}$이 보강되어 100\% 확률로 $\ket{1}$이 관측됩니다!
-\end{enumerate}
-\end{worksheetbox}
-
-% =============================================================================
-\section{블로흐 구 (Bloch Sphere) 기하학적 매개화}
-% =============================================================================
-단일 큐비트의 순수 상태 $\ket{\psi}$는 2개의 실수 각도 $(\theta, \phi)$를 통해 3차원 단위 구면 표면 위의 점으로 1:1 매개화됩니다:
-$$\ket{\psi} = \cos\frac{\theta}{2}\ket{0} + e^{i\phi}\sin\frac{\theta}{2}\ket{1} \quad (0 \le \theta \le \pi, \; 0 \le \phi < 2\pi)$$
+\begin{definition}[유니터리 행렬의 핵심 성질]
+정방행렬 $U$의 켤레 전치 행렬 $U^*$가 역행렬 $U^{-1}$과 같을 때, $U$를 유니터리 행렬이라 합니다:
+$$U^* U = U U^* = I \iff U^{-1} = U^*$$
 \begin{itemize}
-    \item \textbf{위도각 $\theta$}: 0과 1의 관측 확률을 결정합니다 ($P(0) = \cos^2\frac{\theta}{2}, \; P(1) = \sin^2\frac{\theta}{2}$). 북극은 $\ket{0}$ ($\theta=0$), 남극은 $\ket{1}$ ($\theta=\pi$).
-    \item \textbf{경도각 $\phi$}: $XY$ 적도 평면 상에서 회전하는 상대 위상각을 결정합니다.
-    \item \textbf{주요 6대 기저점}:
-    $$\text{북극: } \ket{0}, \quad \text{남극: } \ket{1}, \quad +X\text{축: } \ket{+}, \quad -X\text{축: } \ket{-}, \quad +Y\text{축: } \ket{+i}, \quad -Y\text{축: } \ket{-i}$$
+    \item \textbf{확률 보존성}: 임의의 상태벡터 $\ket{\psi}$에 $U$를 곱한 후의 노름은 $\|U\ket{\psi}\| = \sqrt{\bra{\psi}U^* U\ket{\psi}} = \sqrt{\braket{\psi}{\psi}} = 1$로 불변합니다.
+    \item \textbf{기하학적 본질}: 블로흐 구면 위에서 상태벡터의 길이를 $1$로 엄격히 유지하면서 구 표면을 회전시키는 \textbf{3차원 강체 회전(Rigid Rotation)} 연산입니다.
+    \item \textbf{완전한 가역성}: 모든 양자 게이트는 역변환 $U^*(=U^{-1})$이 존재하므로 언제든 이전 상태로 완벽히 복원할 수 있습니다.
 \end{itemize}
+\end{definition}
 
-% =============================================================================
-\section{NumPy 인터랙티브 실습 가이드 (Day 1 2부)}
-% =============================================================================
-2부 75분 실습에서는 외부 양자 라이브러리 없이, \textbf{순수 Python과 NumPy}만으로 복소 기저와 유니터리 연산자를 직접 구축합니다:
+\subsection{고전 게이트 대응 및 6대 핵심 단일 큐비트 게이트}
+고전 컴퓨터의 논리 게이트와 비교할 때, 양자 게이트는 가역성과 기하학적 회전이라는 독특한 특징을 가집니다:
+\begin{enumerate}
+    \item \textbf{Pauli-$X$ 게이트 (비트 반전 $\leftrightarrow$ 고전 NOT 게이트 대응)}:
+    $$X = \begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix}, \quad X\ket{0} = \ket{1}, \quad X\ket{1} = \ket{0}$$
+    \textbf{기하학적 직관}: 블로흐 구의 \textbf{$X$축을 중심으로 $180^\circ$ ($\pi$ rad) 회전}하여 북극($\ket{0}$)과 남극($\ket{1}$)의 위치를 맞바꿉니다.
+    \item \textbf{Pauli-$Y$ 게이트 (비트 및 허수 위상 동시 반전)}:
+    $$Y = \begin{pmatrix} 0 & -i \\ i & 0 \end{pmatrix}, \quad Y\ket{0} = i\ket{1}, \quad Y\ket{1} = -i\ket{0}$$
+    \textbf{기하학적 직관}: 블로흐 구의 \textbf{$Y$축을 중심으로 $180^\circ$ 회전}시킵니다.
+    \item \textbf{Pauli-$Z$ 게이트 (위상 반전 $\leftrightarrow$ 양자 고유의 부호 반전)}:
+    $$Z = \begin{pmatrix} 1 & 0 \\ 0 & -1 \end{pmatrix}, \quad Z\ket{0} = \ket{0}, \quad Z\ket{1} = -\ket{1}$$
+    \textbf{기하학적 직관}: 블로흐 구의 \textbf{$Z$축을 중심으로 $180^\circ$ 회전}시킵니다. $\ket{0}$과 $\ket{1}$의 측정 확률은 그대로 유지하면서 적도면의 $\ket{+}$와 $\ket{-}$를 서로 교환합니다.
+    \item \textbf{Hadamard ($H$) 게이트 (균등 중첩 생성 $\leftrightarrow$ 양자 알고리즘의 핵심 관문)}:
+    $$H = \frac{1}{\sqrt{2}}\begin{pmatrix} 1 & 1 \\ 1 & -1 \end{pmatrix}, \quad H\ket{0} = \ket{+} = \frac{\ket{0}+\ket{1}}{\sqrt{2}}, \quad H\ket{1} = \ket{-} = \frac{\ket{0}-\ket{1}}{\sqrt{2}}$$
+    \textbf{기하학적 직관}: 블로흐 구의 \textbf{$(X+Z)/\sqrt{2}$ 대각선 축을 중심으로 $180^\circ$ 회전}하여 $Z$축 기저($\ket{0}, \ket{1}$)를 $X$축 기저($\ket{+}, \ket{-}$)로 1:1 변환합니다. 고전의 무작위 동전 던지기와 달리, $H^2 = I$의 완벽한 유니터리 가역성을 갖습니다.
+    \item \textbf{위상 회전 게이트 ($S, T$ 게이트)}:
+    \begin{align*}
+    S &= \begin{pmatrix} 1 & 0 \\ 0 & i \end{pmatrix} \quad (\text{$Z$축 기준 } 90^\circ \text{ 회전, } S^2=Z) \\[0.3em]
+    T &= \begin{pmatrix} 1 & 0 \\ 0 & e^{i\pi/4} \end{pmatrix} \quad (\text{$Z$축 기준 } 45^\circ \text{ 회전, } T^2=S)
+    \end{align*}
+\end{enumerate}
 
-\begin{lstlisting}[language=Python]
-import numpy as np
+\subsection{Hadamard 게이트의 기저 변환과 자기 역원성 (\texorpdfstring{$H^2 = I$}{H² = I})}
+Hadamard 게이트는 계산 기저($Z$축: $\ket{0}, \ket{1}$)와 중첩 기저($X$축: $\ket{+}, \ket{-}$) 사이를 가역적으로 1:1 변환하는 핵심 연산자입니다.
 
-# 1. 기저 정의 및 6대 게이트 구성
-ket0 = np.array([[1.0], [0.0]], dtype=complex)
-ket1 = np.array([[0.0], [1.0]], dtype=complex)
+\begin{enumerate}
+    \item \textbf{$Z$-기저에서 $X$-기저로의 순방향 변환}:
+    $$H\ket{0} = \frac{1}{\sqrt{2}}\begin{pmatrix} 1 & 1 \\ 1 & -1 \end{pmatrix}\begin{pmatrix} 1 \\ 0 \end{pmatrix} = \frac{1}{\sqrt{2}}\begin{pmatrix} 1 \\ 1 \end{pmatrix} = \ket{+}$$
+    $$H\ket{1} = \frac{1}{\sqrt{2}}\begin{pmatrix} 1 & 1 \\ 1 & -1 \end{pmatrix}\begin{pmatrix} 0 \\ 1 \end{pmatrix} = \frac{1}{\sqrt{2}}\begin{pmatrix} 1 \\ -1 \end{pmatrix} = \ket{-}$$
+    \item \textbf{$X$-기저에서 $Z$-기저로의 역방향 변환}:
+    $$H\ket{+} = \frac{1}{\sqrt{2}}\begin{pmatrix} 1 & 1 \\ 1 & -1 \end{pmatrix}\left[\frac{1}{\sqrt{2}}\begin{pmatrix} 1 \\ 1 \end{pmatrix}\right] = \frac{1}{2}\begin{pmatrix} 1+1 \\ 1-1 \end{pmatrix} = \begin{pmatrix} 1 \\ 0 \end{pmatrix} = \ket{0}$$
+    $$H\ket{-} = \frac{1}{\sqrt{2}}\begin{pmatrix} 1 & 1 \\ 1 & -1 \end{pmatrix}\left[\frac{1}{\sqrt{2}}\begin{pmatrix} 1 \\ -1 \end{pmatrix}\right] = \frac{1}{2}\begin{pmatrix} 1-1 \\ 1+1 \end{pmatrix} = \begin{pmatrix} 0 \\ 1 \end{pmatrix} = \ket{1}$$
+    \item \textbf{대수적 자기 역원성(Involution) 증명}:
+    $$H^2 = H \cdot H = \frac{1}{\sqrt{2}}\begin{pmatrix} 1 & 1 \\ 1 & -1 \end{pmatrix} \frac{1}{\sqrt{2}}\begin{pmatrix} 1 & 1 \\ 1 & -1 \end{pmatrix} = \frac{1}{2}\begin{pmatrix} 2 & 0 \\ 0 & 2 \end{pmatrix} = \begin{pmatrix} 1 & 0 \\ 0 & 1 \end{pmatrix} = I$$
+    따라서 $H$ 게이트는 자기 자신이 곧 역행렬($H = H^{-1} = H^*$)인 에르미트 유니터리(Hermitian Unitary) 연산자입니다.
+\end{enumerate}
 
-H = (1 / np.sqrt(2)) * np.array([[1, 1], [1, -1]], dtype=complex)
-X = np.array([[0, 1], [1, 0]], dtype=complex)
-Z = np.array([[1, 0], [0, -1]], dtype=complex)
-
-# 2. H^2 = I 가역성 및 상대 위상 간섭 검증
-plus  = H @ ket0   # (|0> + |1>) / sqrt(2)
-minus = H @ ket1   # (|0> - |1>) / sqrt(2)
-
-assert np.allclose(H @ plus, ket0), "H|+>는 100% |0>으로 보강 간섭!"
-assert np.allclose(H @ minus, ket1), "H|->는 100% |1>로 상쇄 간섭!"
-
-# 3. 2부 도전 챌린지: H * Z * H * X |0> 상태 추적
-psi_final = H @ Z @ H @ X @ ket0
-assert np.allclose(psi_final, ket0), "H Z H = X이므로 X * X = I가 되어 원래 |0> 복귀!"
-print("Day 1 NumPy 검증 완료!")
-\end{lstlisting}
+\begin{notebox}{Hadamard 연산자의 핵심 역할}
+\begin{itemize}
+    \item \textbf{가역적 기저 변환}: 고전의 확률적 난수 발생(Random bit)과 달리, Hadamard 연산자는 $Z$축과 $X$축 사이의 결정론적 유니터리 회전이므로 $H$를 두 번 적용하면 원래의 순수 상태로 $100\%$ 완벽히 복원됩니다 ($H^2 = I$).
+    \item \textbf{양자 알고리즘 초기화와 측정 기저 전환}: 바닥 상태 $\ket{0}$에서 균등 중첩 $\ket{+}$를 생성하고, 반대로 중첩 기저에서의 연산 결과를 $Z$-기저 측정으로 환원하기 위한 가역적 관문 역할을 수행합니다.
+\end{itemize}
+\end{notebox}
 
 \end{document}
-

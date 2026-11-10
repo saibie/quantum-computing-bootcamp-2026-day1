@@ -1,7 +1,7 @@
 # 양자컴퓨팅 이론 및 실습 (12시간 집중 부트캠프) - Day 1
 
 본 저장소는 **[양자컴퓨팅 이론 및 실습]** 4주(총 12시간) 집중 강좌 중 **1주차 (Day 1: 단일 큐비트와 상태벡터)** 공식 학생용 실습 및 배포 저장소입니다.  
-강의 슬라이드, Day 1 렉처노트, 실라버스 PDF 및 실습 파일(Jupyter Notebook), 원클릭 구동 스크립트가 포함되어 있습니다.
+강의 슬라이드, Day 1 렉처노트 및 실습 파일(Jupyter Notebook), 원클릭 구동 스크립트가 포함되어 있습니다.
 
 - **강사**: 서상협 ((주)큐렌스 / Q-Rence)
 - **주제**: 1주차 - 단일 큐비트와 상태벡터 (Pure NumPy 기초 실습)
@@ -66,8 +66,7 @@ uv run jupyter lab --notebook-dir=hands_on
 ```text
 ├── docs/                               # 강의 교재 및 참고 문서 (PDF)
 │   ├── day1_statevector.pdf            # Day 1 강의 슬라이드 (단일 큐비트와 상태벡터)
-│   ├── lecture_notes_day1.pdf          # Day 1 핵심 수식/원리 집중 렉처노트
-│   └── syllabus_12hours.pdf            # 4주 전체 강의 계획서 및 커리큘럼
+│   └── lecture_notes_day1.pdf          # Day 1 핵심 수식/원리 집중 렉처노트
 │
 ├── hands_on/                           # 실습 코드
 │   ├── day1_numpy_statevector.ipynb    # [Day 1 실습] 상태벡터, 브라켓 표기법, 단일 큐비트 게이트

@@ -117,8 +117,14 @@ $$\braket{0}{0} = 1, \quad \braket{1}{1} = 1, \quad \braket{0}{1} = 0, \quad \br
 $$\ket{\psi} = \alpha\ket{0} + \beta\ket{1} = \begin{pmatrix} \alpha \\ \beta \end{pmatrix} \quad (\alpha, \beta \in \mathbb{C})$$
 여기서 $\alpha$와 $\beta$를 \textbf{복소 확률 진폭(Complex Probability Amplitude)}이라 부릅니다.
 
-\subsection{왜 실수가 아니라 복소수(\texorpdfstring{$\mathbb{C}$}{C})인가?}
-양자 상태는 입자의 확률적 위치뿐만 아니라 파동의 성질을 동시에 지닙니다. 파동의 특성을 기술하기 위해서는 진폭의 크기뿐만 아니라 \textbf{회전 각도(위상, Phase)}가 필수적입니다. 복소수의 극형식 $z = r e^{i\phi}$를 도입함으로써, 하나의 수치 안에 크기 $r$과 파동 회전 각도 $\phi$를 동시에 완벽히 압축할 수 있습니다.
+\subsection{왜 실수가 아니라 복소수(\texorpdfstring{$\mathbb{C}$}{C})인가? (위상과 간섭)}
+양자 상태는 입자의 확률적 위치뿐만 아니라 파동의 성질을 동시에 지닙니다. 파동의 특성을 기술하기 위해서는 진폭의 크기뿐만 아니라 \textbf{회전 각도(위상, Phase)}가 필수적입니다:
+\begin{enumerate}
+    \item \textbf{파동의 회전각(위상) 표현}: 복소수의 극형식 $z = r e^{i\phi} = r(\cos\phi + i\sin\phi)$를 도입함으로써, 하나의 수치 안에 크기 $r$ ($|z|^2=r^2$은 관측 확률)과 파동 회전 각도 $\phi$를 동시에 완벽히 압축할 수 있습니다. 실수만으로는 '회전'과 '주기성'을 1차원 수직선 상에 담아낼 수 없습니다.
+    \item \textbf{보강 및 상쇄 간섭(Interference)}: 두 복소 확률 진폭이 만날 때, 확률은 단순 합산되지 않고 교차 간섭항(Cross term)이 발생합니다:
+    $$|\alpha + \beta|^2 = |\alpha|^2 + |\beta|^2 + 2\text{Re}(\alpha^* \beta)$$
+    두 진폭의 상대적 위상($\phi$)이 같으면 진폭이 보강 간섭(Constructive Interference)을 일으켜 관측 확률이 증폭되고, 위상이 $180^\circ$ 반대이면 상쇄 간섭(Destructive Interference)으로 소멸합니다. 이 파동적 간섭 제어가 바로 \textbf{양자 알고리즘 계산 가속의 수학적 원천}입니다.
+\end{enumerate}
 
 % =============================================================================
 \section{사영 측정(Projection Measurement)과 Born 규칙}
@@ -148,6 +154,34 @@ $$\ket{\psi} = \alpha\ket{0} + \beta\ket{1} = \begin{pmatrix} \alpha \\ \beta \e
     $$\ket{\psi_{\mathrm{after}}} = \ket{0} = \begin{pmatrix} 1 \\ 0 \end{pmatrix}$$
 \end{enumerate}
 \end{worksheetbox}
+
+\subsection{양자 상태의 관측 특성과 통계적 샷(Shot) 샘플링}
+상태벡터를 실험실에서 계측할 때 고전 컴퓨터와 구별되는 두 가지 결정적 한계와 규칙이 존재합니다:
+\begin{enumerate}
+    \item \textbf{내부 진폭의 불관측성}: 고전 메모리의 비트 값($0$ 또는 $1$)은 원본 손상 없이 언제든 화면에 그대로 읽어낼 수 있습니다. 그러나 큐비트의 내부 복소수 진폭 $\alpha, \beta$는 계측기로 직접 읽어낼 수 있는 물리량이 아닙니다.
+    \item \textbf{단일 측정의 이산성}: 단 1회의 사영 측정에서 계측기가 출력하는 물리적 신호는 오직 고전 비트 \textbf{$0$ 또는 $1$ 중 단 하나}이며, 동시에 큐비트는 해당 기저로 즉각 붕괴합니다.
+    \item \textbf{통계적 샷(Shot) 샘플링의 필수성}: 따라서 내부 확률 분포($|\alpha|^2, |\beta|^2$)를 실험적으로 재구성하기 위해서는 동일하게 초기화된 양자 회로를 $M$번(수백~수십만 회) 반복 실행하여 통계적 빈도를 집계하는 \textbf{Shot 샘플링}이 반드시 필요합니다.
+    \item \textbf{대수의 법칙과 $1/\sqrt{M}$ 수렴 속도}: 중심극한정리에 의해 $M$번의 샷을 수행했을 때 표본 오차는 $\mathcal{O}(1/\sqrt{M})$에 비례합니다. 즉, 측정 오차를 $1/10$로 줄이기 위해서는 측정 횟수를 $100$배 늘려야 합니다.
+\end{enumerate}
+
+\subsection{고전 비트와 양자 큐비트의 4대 본질적 비교}
+1부 전반부에서 다룬 고전 정보와 양자 정보의 핵심 차이를 정리하면 다음과 같습니다:
+
+\begin{table}[htbp]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lll}
+\toprule
+\textbf{구분} & \textbf{고전 비트 (Classical Bit)} & \textbf{양자 큐비트 (Qubit)} \\
+\midrule
+\textbf{물리적 실체} & 2진 스위치 전압 레벨 ($0\text{V} \leftrightarrow 5\text{V}$) & 2준위 양자계 (초전도 접합, 이온, 광자 등) \\
+\textbf{수학적 모델} & 이산 집합 $\{0, 1\}$ & 복소 2차원 내적 공간 $\mathbb{C}^2$의 단위벡터 \\
+\textbf{상태 변화} & 불리언 논리 게이트 (AND, OR, NOT) & 벡터의 크기를 보존하는 유니터리 변환 ($U^* U = I$) \\
+\textbf{결과 확인} & 언제든 값의 손상 없이 읽기 가능 & 측정 순간 확률적으로 0 또는 1로 투영 붕괴 ($P=|\alpha|^2$) \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
 
 % =============================================================================
 \section{블로흐 구 (Bloch Sphere) 기하학적 매개화와 6대 기저 상태}
@@ -255,18 +289,20 @@ $$U^* U = U U^* = I \iff U^{-1} = U^*$$
     \textbf{기하학적 직관}: 블로흐 구의 \textbf{$X$축을 중심으로 $180^\circ$ ($\pi$ rad) 회전}하여 북극($\ket{0}$)과 남극($\ket{1}$)의 위치를 맞바꿉니다.
     \item \textbf{Pauli-$Y$ 게이트 (비트 및 허수 위상 동시 반전)}:
     $$Y = \begin{pmatrix} 0 & -i \\ i & 0 \end{pmatrix}, \quad Y\ket{0} = i\ket{1}, \quad Y\ket{1} = -i\ket{0}$$
-    \textbf{기하학적 직관}: 블로흐 구의 \textbf{$Y$축을 중심으로 $180^\circ$ 회전}시킵니다.
+    \textbf{연산자 분해 관계}: $Y = i X Z = -i Z X$로 분해되며, 비트 반전($X$)과 위상 반전($Z$)이 허수 계수 $i$와 함께 결합된 연산자입니다.\\
+    \textbf{기하학적 직관}: 블로흐 구의 \textbf{$Y$축을 중심으로 $180^\circ$ 회전}시킵니다. 회전축 극점에 위치한 복소 기저 $\ket{+i}, \ket{-i}$는 $Y$ 게이트 통과 시 위상 계수만 붙는 고유벡터(Eigenvector)로서 축 자체가 고정 불변합니다 ($Y\ket{+i} = \ket{+i}, \; Y\ket{-i} = -\ket{-i}$).
     \item \textbf{Pauli-$Z$ 게이트 (위상 반전 $\leftrightarrow$ 양자 고유의 부호 반전)}:
     $$Z = \begin{pmatrix} 1 & 0 \\ 0 & -1 \end{pmatrix}, \quad Z\ket{0} = \ket{0}, \quad Z\ket{1} = -\ket{1}$$
     \textbf{기하학적 직관}: 블로흐 구의 \textbf{$Z$축을 중심으로 $180^\circ$ 회전}시킵니다. $\ket{0}$과 $\ket{1}$의 측정 확률은 그대로 유지하면서 적도면의 $\ket{+}$와 $\ket{-}$를 서로 교환합니다.
     \item \textbf{Hadamard ($H$) 게이트 (균등 중첩 생성 $\leftrightarrow$ 양자 알고리즘의 핵심 관문)}:
     $$H = \frac{1}{\sqrt{2}}\begin{pmatrix} 1 & 1 \\ 1 & -1 \end{pmatrix}, \quad H\ket{0} = \ket{+} = \frac{\ket{0}+\ket{1}}{\sqrt{2}}, \quad H\ket{1} = \ket{-} = \frac{\ket{0}-\ket{1}}{\sqrt{2}}$$
     \textbf{기하학적 직관}: 블로흐 구의 \textbf{$(X+Z)/\sqrt{2}$ 대각선 축을 중심으로 $180^\circ$ 회전}하여 $Z$축 기저($\ket{0}, \ket{1}$)를 $X$축 기저($\ket{+}, \ket{-}$)로 1:1 변환합니다. 고전의 무작위 동전 던지기와 달리, $H^2 = I$의 완벽한 유니터리 가역성을 갖습니다.
-    \item \textbf{위상 회전 게이트 ($S, T$ 게이트)}:
+    \item \textbf{위상 회전 게이트 ($S, T$ 게이트 $\leftrightarrow$ 단일 큐비트 회전의 핵심)}:
     \begin{align*}
-    S &= \begin{pmatrix} 1 & 0 \\ 0 & i \end{pmatrix} \quad (\text{$Z$축 기준 } 90^\circ \text{ 회전, } S^2=Z) \\[0.3em]
-    T &= \begin{pmatrix} 1 & 0 \\ 0 & e^{i\pi/4} \end{pmatrix} \quad (\text{$Z$축 기준 } 45^\circ \text{ 회전, } T^2=S)
+    S &= \begin{pmatrix} 1 & 0 \\ 0 & i \end{pmatrix}, \quad S\ket{0} = \ket{0}, \quad S\ket{1} = i\ket{1} \quad (\text{$Z$축 기준 } 90^\circ \text{ 회전, } S^2=Z) \\[0.4em]
+    T &= \begin{pmatrix} 1 & 0 \\ 0 & e^{i\pi/4} \end{pmatrix}, \quad T\ket{0} = \ket{0}, \quad T\ket{1} = e^{i\pi/4}\ket{1} \quad (\text{$Z$축 기준 } 45^\circ \text{ 회전, } T^2=S, \; T^4=Z)
     \end{align*}
+    \textbf{물리적·공학적 의의}: $S$ 게이트는 $Z$ 게이트의 제곱근($\sqrt{Z}$) 역할을 수행하며, $T$ 게이트($\sqrt{S}$)는 클리포드(Clifford) 게이트 군($X, Y, Z, H, S$)을 넘어 임의의 단일 큐비트 상태를 원하는 정밀도로 회전 근사할 수 있게 해주는 \textbf{보편적 결함 허용(Fault-Tolerant) 양자컴퓨팅의 핵심 관문}입니다.
 \end{enumerate}
 
 \subsection{Hadamard 게이트의 기저 변환과 자기 역원성 (\texorpdfstring{$H^2 = I$}{H² = I})}
